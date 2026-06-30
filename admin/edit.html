@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>编辑事件 — 潘元川</title>
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Inter', -apple-system, sans-serif;
+      background: #0a0a0a;
+      color: #fff;
+      padding: 40px;
+      max-width: 900px;
+      margin: 0 auto;
+    }
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 32px;
+      padding-bottom: 20px;
+      border-bottom: 1px solid #222;
+    }
+    .header h1 { font-size: 1.3rem; }
+    .header h1 span { color: #666; font-weight: 400; }
+    .btn {
+      padding: 8px 20px;
+      border-radius: 8px;
+      font-size: 0.85rem;
+      font-weight: 500;
+      cursor: pointer;
+      border: none;
+      text-decoration: none;
+      display: inline-block;
+    }
+    .btn-primary { background: #f5c842; color: #0a0a0a; }
+    .btn-secondary { background: #222; color: #fff; border: 1px solid #333; }
+    .btn-danger { background: #ff4d4d; color: #fff; }
+    .btn-sm { padding: 6px 14px; font-size: 0.8rem; }
+
+    .form-group { margin-bottom: 20px; }
+    .form-group label {
+      display: block;
+      font-size: 0.8rem;
+      color: #a0a0a0;
+      margin-bottom: 6px;
+    }
+    .form-row {
+      display: flex;
+      gap: 16px;
+    }
+    .form-row .form-group { flex: 1; }
+    input, textarea, select {
+      width: 100%;
+      padding: 10px 14px;
+      background: #111;
+      border: 1px solid #333;
+      border-radius: 8px;
+      color: #fff;
+      font-size: 0.9rem;
+      outline: none;
+      font-family: inherit;
+    }
+    textarea { min-height: 280px; font-family: 'JetBrains Mono', monospace; font-size: 0.85rem; line-height: 1.7; resize: vertical; }
+    input:focus, textarea:focus { border-color: #f5c842; }
+
+    .gallery-section { margin-top: 32px; padding-top: 24px; border-top: 1px solid #222; }
+    .gallery-section h3 { font-size: 1rem; color: #f5c842; margin-bottom: 16px; }
+    .media-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 10px; margin-bottom: 16px; }
+    .media-item {
+      position: relative;
+      aspect-ratio: 1;
+      border-radius: 8px;
+      overflow: hidden;
+      background: #1a1a1a;
+      border: 1px solid #222;
+    }
+    .media-item img, .media-item video { width: 100%; height: 100%; object-fit: cover; }
+    .media-item .del {
+      position: absolute;
+      top: 4px; right: 4px;
+      width: 24px; height: 24px;
+      border-radius: 50%;
+      border: none;
+      background: rgba(0,0,0,0.7);
+      color: #ff4d4d;
+      font-size: 0.8rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      transition: opacity 0.2s;
+    }
+    .media-item:hover .del { opacity: 1; }
+    .upload-area {
+      border: 2px dashed #333;
+      border-radius: 8px;
+      padding: 24px;
+      text-align: center;
+      cursor: pointer;
+      color: #666;
+      transition: all 0.2s;
+    }
+    .upload-area:hover { border-color: #f5c842; color: #f5c842; }
+    .upload-area input { display: none; }
+    .msg {
+      padding: 12px 16px;
+      border-radius: 8px;
+      margin-bottom: 16px;
+      font-size: 0.85rem;
+      display: none;
+    }
+    .msg.error { display: block; background: #ff4d4d20; border: 1px solid #ff4d4d40; color: #ff6b6b; }
+    .msg.success { display: block; background: #4dff4d20; border: 1px solid #4dff4d40; color: #6bff6b; }
+    .preview-link {
+      display: inline-block;
+      margin-top: 8px;
+      font-size: 0.8rem;
+      color: #666;
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <h1 id="pageTitle">编辑事件</h1>
+    <div>
+      <a href="/admin/dashboard.html" class="btn btn-secondary btn-sm">← 返回列表</a>
+    </div>
+  </div>
+
+  <div class="msg" id="msg"></div>
+
+  <form id="eventForm">
+    <div class="form-row">
+      <div class="form-group">
+        <label>年份</label>
+        <select id="year">
+          <option value="2025">2025</option>
+          <option value="2024">2024</option>
+          <option value="2023">2023</option>
+          <option value="2022">2022</option>
+          <option value="2021">2021</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>序号（年份内排列顺序）</label>
+        <input type="number" id="number" min="1" value="1" />
+      </div>
+    </div>
+    <div class="form-group">
+      <label>事件名称</label>
+      <input type="text" id="name" placeholder="例如：毕业" />
+    </div>
+    <div class="form-group">
+      <label>简短描述</label>
+      <input type="text" id="description" placeholder="例如：大学生涯 · 完美落幕" />
+    </div>
+    <div class="form-group">
+      <label>内容（HTML）</label>
+      <textarea id="content" placeholder="输入 HTML 内容..."></textarea>
+      <a href="#" class="preview-link" onclick="previewContent();return false;">预览内容</a>
+      <div id="contentPreview" style="margin-top:12px;padding:16px;background:#111;border-radius:8px;border:1px solid #222;display:none;color:#ccc;font-size:0.9rem;line-height:1.8;"></div>
+    </div>
+    <button type="submit" class="btn btn-primary" style="width:auto;">保存事件</button>
+  </form>
+
+  <!-- Media Management -->
+  <div class="gallery-section" id="mediaSection" style="display:none;">
+    <h3>影像资料</h3>
+    <div class="media-grid" id="mediaGrid"></div>
+    <div class="upload-area" id="uploadArea">
+      <input type="file" id="fileInput" accept="image/*,video/*" multiple />
+      <div>点击上传图片或视频</div>
+    </div>
+  </div>
+
+  <script>
+    const token = localStorage.getItem('pan_token');
+    if (!token) { window.location.href = '/admin/login.html'; }
+
+    let editingId = null;
+
+    async function api(url, opts = {}) {
+      const res = await fetch(url, {
+        ...opts,
+        headers: { ...opts.headers, 'Authorization': 'Bearer ' + token }
+      });
+      if (res.status === 401) { localStorage.removeItem('pan_token'); window.location.href = '/admin/login.html'; }
+      return res;
+    }
+
+    // Load event data if editing
+    const params = new URLSearchParams(window.location.search);
+    const editId = params.get('id');
+    if (editId) {
+      editingId = parseInt(editId);
+      document.getElementById('pageTitle').textContent = '编辑事件';
+      (async () => {
+        const res = await fetch('/api/events');
+        const data = await res.json();
+        for (const yearEvents of Object.values(data.years)) {
+          const ev = yearEvents.find(e => e.id === editingId);
+          if (ev) {
+            document.getElementById('year').value = ev.year;
+            document.getElementById('number').value = ev.number;
+            document.getElementById('name').value = ev.name;
+            document.getElementById('description').value = ev.description;
+            // Need content and media
+            const detailRes = await fetch(`/api/events/${ev.year}/${ev.number}`);
+            const detail = await detailRes.json();
+            document.getElementById('content').value = detail.event.content || '';
+            loadMedia(detail.media);
+            break;
+          }
+        }
+      })();
+    }
+
+    // Save event
+    document.getElementById('eventForm').addEventListener('submit', async e => {
+      e.preventDefault();
+      const body = {
+        year: parseInt(document.getElementById('year').value),
+        number: parseInt(document.getElementById('number').value),
+        name: document.getElementById('name').value,
+        description: document.getElementById('description').value,
+        content: document.getElementById('content').value
+      };
+      if (!body.name) { showMsg('请输入事件名称', 'error'); return; }
+
+      try {
+        let res;
+        if (editingId) {
+          res = await api('/api/admin/events/' + editingId, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(body)
+          });
+        } else {
+          res = await api('/api/admin/events', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(body)
+          });
+        }
+        if (!res.ok) {
+          const err = await res.json();
+          showMsg(err.error || '保存失败', 'error');
+          return;
+        }
+        const result = await res.json();
+        showMsg('保存成功！', 'success');
+        if (!editingId && result.id) {
+          editingId = result.id;
+          document.getElementById('pageTitle').textContent = '编辑事件';
+          document.getElementById('mediaSection').style.display = 'block';
+        }
+      } catch { showMsg('保存失败，请重试', 'error'); }
+    });
+
+    // Preview content
+    function previewContent() {
+      const el = document.getElementById('contentPreview');
+      el.innerHTML = document.getElementById('content').value || '<span style="color:#666;">（空）</span>';
+      el.style.display = 'block';
+    }
+
+    // Media
+    async function loadMedia(media) {
+      if (!media || media.length === 0) return;
+      document.getElementById('mediaSection').style.display = 'block';
+      const grid = document.getElementById('mediaGrid');
+      grid.innerHTML = media.map(item => {
+        const src = '/' + item.file_path;
+        return `
+          <div class="media-item">
+            ${item.is_video
+              ? `<video src="${src}" muted preload="metadata"></video>`
+              : `<img src="${src}" loading="lazy" />`
+            }
+            <button class="del" onclick="deleteMedia(${item.id})">✕</button>
+          </div>
+        `;
+      }).join('');
+    }
+
+    async function deleteMedia(id) {
+      if (!confirm('确定删除这张图片/视频？')) return;
+      await api('/api/admin/media/' + id, { method: 'DELETE' });
+      // Reload media
+      const params = new URLSearchParams(window.location.search);
+      if (editingId) {
+        const res = await fetch('/api/events');
+        const data = await res.json();
+        for (const yearEvents of Object.values(data.years)) {
+          const ev = yearEvents.find(e => e.id === editingId);
+          if (ev) {
+            const detailRes = await fetch(`/api/events/${ev.year}/${ev.number}`);
+            const detail = await detailRes.json();
+            loadMedia(detail.media);
+            break;
+          }
+        }
+      }
+    }
+
+    // Upload
+    document.getElementById('uploadArea').addEventListener('click', () => document.getElementById('fileInput').click());
+    document.getElementById('fileInput').addEventListener('change', async function() {
+      if (!editingId) { showMsg('请先保存事件再上传图片', 'error'); return; }
+      const files = Array.from(this.files);
+      for (const file of files) {
+        const fd = new FormData();
+        fd.append('file', file);
+        fd.append('eventId', editingId);
+        await api('/api/admin/media/upload', { method: 'POST', body: fd });
+      }
+      showMsg('上传成功', 'success');
+      // Reload media
+      const res = await fetch('/api/events');
+      const data = await res.json();
+      for (const yearEvents of Object.values(data.years)) {
+        const ev = yearEvents.find(e => e.id === editingId);
+        if (ev) {
+          const detailRes = await fetch(`/api/events/${ev.year}/${ev.number}`);
+          const detail = await detailRes.json();
+          loadMedia(detail.media);
+          break;
+        }
+      }
+      this.value = '';
+    });
+
+    function showMsg(text, type) {
+      const el = document.getElementById('msg');
+      el.textContent = text;
+      el.className = 'msg ' + type;
+    }
+  </script>
+</body>
+</html>

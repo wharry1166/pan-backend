@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>潘元川</title>
+  <meta name="description" content="潘元川 - 个人主页 · 记录大学成长与点滴。" />
+  <link rel="icon" type="image/svg+xml" href="favicon.svg" />
+  <!-- Open Graph -->
+  <meta property="og:title" content="潘元川" />
+  <meta property="og:description" content="个人主页 · 记录大学成长与点滴。" />
+  <meta property="og:type" content="website" />
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="潘元川" />
+  <meta name="twitter:description" content="个人主页 · 记录大学成长与点滴。" />
+  <!-- Critical CSS inline: prevent white flash -->
+  <style>
+    html, body { background: #0a0a0a; margin: 0; }
+    .nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; padding: 20px 40px; }
+  </style>
+  <link rel="stylesheet" href="style.css" />
+  <!-- Google Fonts: preconnect + async load -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" media="print" onload="this.media='all'" />
+</head>
+<body>
+  <!-- Page Transition -->
+  <div class="page-transition" id="pageTransition"></div>
+
+  <!-- Back to Top -->
+  <button class="back-to-top" id="backToTop" aria-label="回到顶部">↑</button>
+
+  <!-- Shared components slot -->
+  <div id="cursor-slot"></div>
+  <div id="nav-slot"></div>
+
+  <!-- Particle background -->
+  <canvas id="particleCanvas" aria-hidden="true"></canvas>
+
+  <!-- ===== HERO ===== -->
+  <section class="hero" id="hero">
+    <div class="hero-bg">
+      <img src="assets/images/bg-hero.jpg" alt="" class="hero-bg-img" fetchpriority="high" decoding="async" width="2400" height="1600" />
+    </div>
+    <div class="hero-overlay" aria-hidden="true"></div>
+
+    <div class="hero-content">
+      <div class="hero-text">
+        <h1 class="hero-name">
+          <span class="hero-name-line">潘</span>
+          <span class="hero-name-line hero-name-accent">元川</span>
+        </h1>
+        <p class="hero-tagline" id="hero-tagline"></p>
+        <div class="hero-cta">
+          <div class="btn-magnetic">
+            <a href="#about" class="btn-primary"><span>Explore</span><span class="btn-arrow"> ↓</span></a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== ABOUT ===== -->
+  <section class="section" id="about" aria-labelledby="about-title">
+    <div class="container">
+      <div class="section-header animate-on-scroll">
+        <h2 class="section-title" id="about-title">看看那四年</h2>
+        <div class="section-line"></div>
+      </div>
+
+      <!-- Year tabs -->
+      <div class="year-tabs animate-on-scroll">
+        <button class="year-tab active" data-year="2021">2021</button>
+        <button class="year-tab" data-year="2022">2022</button>
+        <button class="year-tab" data-year="2023">2023</button>
+        <button class="year-tab" data-year="2024">2024</button>
+        <button class="year-tab" data-year="2025">2025</button>
+      </div>
+
+      <!-- Year panels -->
+      <div class="year-panels">
+        <div class="year-panel active" data-year="2021">
+          <h3 class="panel-year">2021</h3>
+          <ul class="event-list" id="events-2021"></ul>
+        </div>
+        <div class="year-panel" data-year="2022">
+          <h3 class="panel-year">2022</h3>
+          <ul class="event-list" id="events-2022"></ul>
+        </div>
+        <div class="year-panel" data-year="2023">
+          <h3 class="panel-year">2023</h3>
+          <ul class="event-list" id="events-2023"></ul>
+        </div>
+        <div class="year-panel" data-year="2024">
+          <h3 class="panel-year">2024</h3>
+          <ul class="event-list" id="events-2024"></ul>
+        </div>
+        <div class="year-panel" data-year="2025">
+          <h3 class="panel-year">2025</h3>
+          <ul class="event-list" id="events-2025"></ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== CONTACT ===== -->
+  <section class="section section-dark" id="contact" aria-labelledby="contact-title">
+    <div class="container">
+      <div class="section-header animate-on-scroll">
+        <h2 class="section-title" id="contact-title">Get In Touch</h2>
+        <div class="section-line"></div>
+      </div>
+
+      <div class="contact-grid">
+        <div class="contact-card" data-href="mailto:panyuanchuan@xiaomi.com">
+          <div class="contact-icon" aria-hidden="true">⟶</div>
+          <div>
+            <h4>Email</h4>
+            <p>panyuanchuan@xiaomi.com</p>
+          </div>
+        </div>
+        <div class="contact-card">
+          <div class="contact-icon" aria-hidden="true">⟶</div>
+          <div>
+            <h4>Location</h4>
+            <p>南昌</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="social-links">
+        <span class="social-link">微信：C2740505947</span>
+        <span class="social-link">QQ：2740505947</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== FOOTER ===== -->
+  <div id="footer-slot"></div>
+
+  <!-- Scripts -->
+  <script src="https://unpkg.com/lenis@1.1.18/dist/lenis.min.js"></script>
+  <script src="js/components.js"></script>
+  <script src="js/about-tabs.js"></script>
+  <script src="js/hero-typewriter.js"></script>
+  <script src="js/button-effects.js"></script>
+  <script src="js/smooth-scroll.js"></script>
+  <script src="js/cursor.js"></script>
+  <script src="js/particles.js"></script>
+  <script src="js/nav.js"></script>
+  <script src="js/scroll-reveal.js"></script>
+  <script>
+    // ---- Load events from API ----
+    (async function loadEvents() {
+      try {
+        const res = await fetch('/api/events');
+        const data = await res.json();
+        for (const [year, events] of Object.entries(data.years)) {
+          const ul = document.getElementById('events-' + year);
+          if (!ul) continue;
+          ul.innerHTML = events.map(ev => `
+            <li class="event-item">
+              <span class="event-dot"></span>
+              <a href="event.html?y=${ev.year}&n=${ev.number}" class="event-content">
+                <h4 class="event-name">${escHtml(ev.name)}</h4>
+                <p class="event-desc">${escHtml(ev.description)}</p>
+              </a>
+            </li>
+          `).join('');
+        }
+      } catch (e) {
+        console.error('Failed to load events', e);
+      }
+      function escHtml(s) { return String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'})[c]); }
+    })();
+
+    // ---- Page Transition fade-in ----
+    (function() {
+      const pt = document.getElementById('pageTransition');
+      if (pt) pt.classList.remove('active');
+    })();
+
+    // ---- Hero Parallax ----
+    (function initHeroParallax() {
+      const heroBg = document.querySelector('.hero-bg-img');
+      if (!heroBg) return;
+      let ticking = false;
+      window.addEventListener('scroll', () => {
+        if (!ticking) {
+          requestAnimationFrame(() => {
+            const st = window.scrollY;
+            const maxScroll = window.innerHeight;
+            const progress = Math.min(st / maxScroll, 1);
+            heroBg.style.transform = `translateY(${progress * 80}px) scale(${1 - progress * 0.08})`;
+            ticking = false;
+          });
+          ticking = true;
+        }
+      });
+    })();
+
+    // ---- Back to Top ----
+    (function initBackToTop() {
+      const btn = document.getElementById('backToTop');
+      if (!btn) return;
+      let ticking = false;
+      function check() {
+        if (window.scrollY > 400) btn.classList.add('visible');
+        else btn.classList.remove('visible');
+        ticking = false;
+      }
+      window.addEventListener('scroll', () => {
+        if (!ticking) { requestAnimationFrame(check); ticking = true; }
+      });
+      btn.addEventListener('click', () => {
+        if (window.lenis) window.lenis.scrollTo(0);
+        else window.scrollTo({ top: 0, behavior: 'smooth' });
+      });
+    })();
+  </script>
+</body>
+</html>

@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>管理 — 潘元川</title>
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Inter', -apple-system, sans-serif;
+      background: #0a0a0a;
+      color: #fff;
+      padding: 40px;
+    }
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 32px;
+      padding-bottom: 20px;
+      border-bottom: 1px solid #222;
+    }
+    .header h1 { font-size: 1.3rem; color: #f5c842; }
+    .header h1 span { color: #fff; font-weight: 400; }
+    .header .actions { display: flex; gap: 12px; align-items: center; }
+    .btn {
+      padding: 8px 20px;
+      border-radius: 8px;
+      font-size: 0.85rem;
+      font-weight: 500;
+      cursor: pointer;
+      border: none;
+      text-decoration: none;
+      display: inline-block;
+    }
+    .btn-primary { background: #f5c842; color: #0a0a0a; }
+    .btn-secondary { background: #222; color: #fff; border: 1px solid #333; }
+    .btn-danger { background: #ff4d4d; color: #fff; }
+    .btn-sm { padding: 6px 14px; font-size: 0.8rem; }
+
+    table { width: 100%; border-collapse: collapse; }
+    th, td {
+      text-align: left;
+      padding: 12px 16px;
+      border-bottom: 1px solid #1a1a1a;
+      font-size: 0.9rem;
+    }
+    th { color: #666; font-weight: 500; font-size: 0.8rem; text-transform: uppercase; }
+    td { color: #ccc; }
+    td .actions { display: flex; gap: 8px; }
+    .year-badge {
+      display: inline-block;
+      padding: 2px 10px;
+      border-radius: 4px;
+      font-size: 0.8rem;
+      background: #f5c84220;
+      color: #f5c842;
+      font-family: monospace;
+    }
+    .empty { text-align: center; color: #666; padding: 60px 0; font-size: 0.9rem; }
+    .loading { text-align: center; color: #666; padding: 60px 0; }
+    .logout-btn { background: none; border: none; color: #666; cursor: pointer; font-size: 0.8rem; }
+    .logout-btn:hover { color: #fff; }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <h1>管理后台 <span>/ 事件列表</span></h1>
+    <div class="actions">
+      <a href="/" class="btn btn-secondary btn-sm">返回网站</a>
+      <a href="/admin/edit.html" class="btn btn-primary btn-sm">+ 新建事件</a>
+      <button class="logout-btn" onclick="logout()">退出登录</button>
+    </div>
+  </div>
+
+  <div class="loading" id="loading">加载中...</div>
+  <table id="eventTable" style="display:none;">
+    <thead>
+      <tr>
+        <th>年份</th>
+        <th>序号</th>
+        <th>名称</th>
+        <th>描述</th>
+        <th>操作</th>
+      </tr>
+    </thead>
+    <tbody id="eventList"></tbody>
+  </table>
+  <div class="empty" id="empty" style="display:none;">还没有事件，点击"新建事件"添加第一个</div>
+
+  <script>
+    const token = localStorage.getItem('pan_token');
+    if (!token) { window.location.href = '/admin/login.html'; }
+
+    async function api(url, opts = {}) {
+      const res = await fetch(url, {
+        ...opts,
+        headers: { ...opts.headers, 'Authorization': 'Bearer ' + token }
+      });
+      if (res.status === 401) { localStorage.removeItem('pan_token'); window.location.href = '/admin/login.html'; }
+      return res;
+    }
+
+    async function loadEvents() {
+      const res = await fetch('/api/events');
+      const data = await res.json();
+      const tbody = document.getElementById('eventList');
+      const years = Object.keys(data.years).sort().reverse();
+      if (years.length === 0) {
+        document.getElementById('loading').style.display = 'none';
+        document.getElementById('empty').style.display = 'block';
+        return;
+      }
+      tbody.innerHTML = '';
+      for (const year of years) {
+        for (const ev of data.years[year]) {
+          const tr = document.createElement('tr');
+          tr.innerHTML = `
+            <td><span class="year-badge">${ev.year}</span></td>
+            <td style="color:#666;">#${ev.number}</td>
+            <td><a href="/event.html?y=${ev.year}&n=${ev.number}" style="color:#fff;text-decoration:none;">${escHtml(ev.name)}</a></td>
+            <td style="color:#666;">${escHtml(ev.description)}</td>
+            <td>
+              <div class="actions">
+                <a href="/admin/edit.html?id=${ev.id}" class="btn btn-secondary btn-sm">编辑</a>
+                <button class="btn btn-danger btn-sm" onclick="deleteEvent(${ev.id}, '${escHtml(ev.name)}')">删除</button>
+              </div>
+            </td>
+          `;
+          tbody.appendChild(tr);
+        }
+      }
+      document.getElementById('loading').style.display = 'none';
+      document.getElementById('eventTable').style.display = '';
+    }
+
+    async function deleteEvent(id, name) {
+      if (!confirm(`确定删除「${name}」？此操作不可恢复。`)) return;
+      const res = await api('/api/admin/events/' + id, { method: 'DELETE' });
+      if (res.ok) loadEvents();
+    }
+
+    function logout() {
+      localStorage.removeItem('pan_token');
+      window.location.href = '/admin/login.html';
+    }
+
+    function escHtml(s) { return String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'})[c]); }
+    loadEvents();
+  </script>
+</body>
+</html>
