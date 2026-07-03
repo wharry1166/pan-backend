@@ -9,7 +9,7 @@ const eventsData = [
     name: '进入大学',
     description: '全新的旅程开始了',
     content: '<p><span class="highlight">2021 年秋天</span>，我们的潘哥拖着行李箱走进了大学校门。那天天气很好，阳光透过树荫洒在迎新大道上，到处都是举着牌子的学长学姐。</p><p>刚来南昌的时候宿舍还只有两个人，我相信潘哥永远忘不了王哥喊的口令以及三食堂吃出来的那只蟑螂。</p><blockquote>全新的旅程，从一碗南昌拌粉开始。</blockquote>',
-    images: ['assets/images/events/university.jpg']
+    images: ['assets/images/events/university.webp']
   },
   {
     year: 2021, number: 2,
@@ -65,7 +65,7 @@ const eventsData = [
     name: '毕业',
     description: '大学生涯 · 完美落幕',
     content: '<p>全程心里都飘着一首歌<span class="highlight">"又到凤凰花朵开放的时候"</span>，虽然每天看起来其乐融融，但是故事的最后是一抹离别的灰色，发生了很多事，吃了很多顿好的，后来遇到阳光明媚的午后总会觉得仿佛还在学校马上就要一起去吃饭，想起来要拍一张照片留念。</p><blockquote>凤凰花开的路口，有我最珍惜的朋友。</blockquote>',
-    images: ['assets/images/events/graduation-1.png', 'assets/images/events/graduation-2.png', 'assets/images/events/graduation-3.png', 'assets/images/events/graduation-4.png', 'assets/images/events/graduation-5.png', 'assets/images/events/graduation-6.png', 'assets/images/events/graduation-7.png']
+    images: ['assets/images/events/graduation-1.webp', 'assets/images/events/graduation-2.webp', 'assets/images/events/graduation-3.webp', 'assets/images/events/graduation-4.webp', 'assets/images/events/graduation-5.webp', 'assets/images/events/graduation-6.webp', 'assets/images/events/graduation-7.webp']
   }
 ];
 

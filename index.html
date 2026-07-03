@@ -20,11 +20,7 @@
     .nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; padding: 20px 40px; }
   </style>
   <link rel="stylesheet" href="style.css" />
-  <!-- Google Fonts: preconnect + async load -->
-  <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" media="print" onload="this.media='all'" />
+  <!-- Fonts: using system font stack via CSS -- no external font load -->
 </head>
 <body>
   <!-- Page Transition -->
@@ -43,7 +39,7 @@
   <!-- ===== HERO ===== -->
   <section class="hero" id="hero">
     <div class="hero-bg">
-      <img src="assets/images/bg-hero.jpg" alt="" class="hero-bg-img" fetchpriority="high" decoding="async" width="2400" height="1600" />
+      <img src="assets/images/bg-hero.webp" alt="" class="hero-bg-img" fetchpriority="high" decoding="async" width="1920" height="1280" />
     </div>
     <div class="hero-overlay" aria-hidden="true"></div>
 
@@ -142,7 +138,7 @@
   <div id="footer-slot"></div>
 
   <!-- Scripts -->
-  <script src="https://unpkg.com/lenis@1.1.18/dist/lenis.min.js"></script>
+  <script src="js/lenis.min.js"></script>
   <script src="js/components.js"></script>
   <script src="js/about-tabs.js"></script>
   <script src="js/hero-typewriter.js"></script>
