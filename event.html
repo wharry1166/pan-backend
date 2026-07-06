@@ -26,12 +26,6 @@
     .event-detail .back-link:hover {
       color: var(--accent);
     }
-    .event-detail .detail-year {
-      font-family: var(--font-mono);
-      font-size: 0.95rem;
-      color: var(--accent);
-      margin-bottom: 12px;
-    }
     .event-detail .detail-title {
       font-size: clamp(1.5rem, 4vw, 2.2rem);
       font-weight: 600;
@@ -277,7 +271,6 @@
     <div class="container">
       <a href="index.html#about" class="back-link">← Back to Timeline</a>
 
-      <div class="detail-year" id="detailYear"></div>
       <h1 class="detail-title" id="detailTitle"></h1>
       <div class="detail-author" id="detailAuthor"></div>
       <div class="detail-divider"></div>
@@ -357,7 +350,6 @@
       const n = params.get('n');
 
       if (!y || !n) {
-        document.getElementById('detailYear').textContent = '???';
         document.getElementById('detailTitle').textContent = '事件未找到';
         document.getElementById('detailAuthor').textContent = '';
         document.getElementById('gallerySection').style.display = 'none';
@@ -369,7 +361,6 @@
         if (!res.ok) throw new Error('Not found');
         const { event, media } = await res.json();
 
-        document.getElementById('detailYear').textContent = event.year;
         document.getElementById('detailTitle').textContent = event.name;
         document.getElementById('detailAuthor').textContent = event.author ? `✎ ${event.author}` : '';
         document.getElementById('detailContent').innerHTML = event.content;
@@ -377,7 +368,6 @@
 
         initGallery(event.id, media);
       } catch {
-        document.getElementById('detailYear').textContent = '???';
         document.getElementById('detailTitle').textContent = '事件未找到';
         document.getElementById('detailAuthor').textContent = '';
         document.getElementById('detailContent').innerHTML = '<div class="detail-placeholder">这个事件还没有记录呢</div>';
