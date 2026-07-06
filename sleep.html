@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>潘哥睡觉大赏 — 潘元川</title>
+  <meta name="description" content="收集潘哥的各种睡姿。" />
+  <link rel="icon" type="image/svg+xml" href="favicon.svg" />
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    .sleep-section {
+      min-height: 100vh;
+      padding: 140px 0 80px;
+    }
+    .sleep-section .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--text-secondary);
+      font-size: 0.9rem;
+      font-family: var(--font-mono);
+      margin-bottom: 24px;
+      transition: color var(--transition);
+      text-decoration: none;
+    }
+    .sleep-section .back-link:hover { color: var(--accent); }
+    .sleep-section .page-title {
+      font-size: clamp(1.6rem, 4vw, 2.4rem);
+      font-weight: 600;
+      margin-bottom: 6px;
+    }
+    .sleep-section .page-subtitle {
+      color: var(--text-muted);
+      font-size: 0.9rem;
+      margin-bottom: 40px;
+    }
+
+    /* Upload area */
+    .sleep-upload {
+      border: 2px dashed var(--border);
+      border-radius: var(--radius-md);
+      padding: 32px 20px;
+      text-align: center;
+      cursor: pointer;
+      transition: all var(--transition);
+      color: var(--text-muted);
+      margin-bottom: 40px;
+      max-width: 500px;
+    }
+    .sleep-upload:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+      background: var(--accent-dim);
+    }
+    .sleep-upload .icon { font-size: 2rem; margin-bottom: 6px; }
+    .sleep-upload .text { font-size: 0.9rem; }
+    .sleep-upload .hint { font-size: 0.78rem; opacity: 0.5; margin-top: 4px; }
+    .sleep-upload input { display: none; }
+    .sleep-upload-row {
+      display: flex;
+      gap: 12px;
+      align-items: flex-end;
+      max-width: 500px;
+      margin-bottom: 40px;
+      flex-wrap: wrap;
+    }
+    .sleep-upload-row .name-field {
+      flex: 1;
+      min-width: 140px;
+    }
+    .sleep-upload-row .name-field label {
+      display: block;
+      font-size: 0.78rem;
+      color: var(--text-secondary);
+      margin-bottom: 4px;
+    }
+    .sleep-upload-row .name-field input {
+      width: 100%;
+      padding: 10px 14px;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      color: var(--text-primary);
+      font-size: 0.88rem;
+      outline: none;
+    }
+    .sleep-upload-row .name-field input:focus { border-color: var(--accent); }
+    .sleep-btn {
+      padding: 10px 24px;
+      background: var(--accent);
+      color: #0a0a0a;
+      border: none;
+      border-radius: var(--radius-sm);
+      font-size: 0.88rem;
+      font-weight: 600;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+    .sleep-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+    /* Masonry gallery */
+    .sleep-grid {
+      columns: 4 220px;
+      column-gap: 14px;
+    }
+    .sleep-card {
+      break-inside: avoid;
+      margin-bottom: 14px;
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      position: relative;
+    }
+    .sleep-card img {
+      width: 100%;
+      display: block;
+      cursor: zoom-in;
+    }
+    .sleep-card .byline {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      padding: 30px 12px 10px;
+      background: linear-gradient(transparent, rgba(0,0,0,0.75));
+      color: #fff;
+      font-size: 0.78rem;
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+    .sleep-card:hover .byline { opacity: 1; }
+    .sleep-empty {
+      color: var(--text-muted);
+      text-align: center;
+      padding: 60px 20px;
+      font-size: 0.9rem;
+    }
+
+    /* Lightbox */
+    .lightbox {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.92);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+      padding: 30px;
+      cursor: zoom-out;
+    }
+    .lightbox.active { display: flex; }
+    .lightbox img {
+      max-width: 94vw;
+      max-height: 94vh;
+      object-fit: contain;
+      border-radius: 6px;
+    }
+    .lightbox-close {
+      position: absolute;
+      top: 24px; right: 30px;
+      font-size: 2rem;
+      color: #fff;
+      cursor: pointer;
+      opacity: 0.6;
+      line-height: 1;
+      z-index: 1001;
+    }
+    .lightbox-close:hover { opacity: 1; }
+
+    /* Toast */
+    .toast {
+      position: fixed;
+      bottom: 30px; left: 50%;
+      transform: translateX(-50%) translateY(100px);
+      background: rgba(255,255,255,0.9);
+      backdrop-filter: blur(16px);
+      padding: 14px 28px;
+      border-radius: 60px;
+      border: 1px solid rgba(245,200,66,0.2);
+      box-shadow: 0 8px 40px rgba(0,0,0,0.3);
+      font-weight: 600;
+      color: #111;
+      font-size: 0.95rem;
+      z-index: 2000;
+      transition: all 0.4s cubic-bezier(0.34,1.56,0.64,1);
+      pointer-events: none;
+      white-space: nowrap;
+    }
+    .toast.show { transform: translateX(-50%) translateY(0); }
+
+    @media (max-width: 640px) {
+      .sleep-grid { columns: 2 140px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="page-transition" id="pageTransition"></div>
+  <button class="back-to-top" id="backToTop">↑</button>
+  <div id="nav-slot"></div>
+
+  <section class="sleep-section section">
+    <div class="container">
+      <a href="index.html" class="back-link">← 返回首页</a>
+      <h1 class="page-title">潘哥睡觉大赏</h1>
+      <p class="page-subtitle">收集潘哥的各种睡姿，欢迎投稿。</p>
+
+      <!-- Upload -->
+      <div class="sleep-upload-row">
+        <div class="name-field">
+          <label>投稿人</label>
+          <input type="text" id="uploaderName" placeholder="你的名字（选填）" />
+        </div>
+        <div class="sleep-upload" id="uploadZone">
+          <input type="file" id="fileInput" accept="image/*" />
+          <div class="icon">📸</div>
+          <div class="text">点击选择照片</div>
+          <div class="hint">支持 JPG / PNG / WebP，最大 20MB</div>
+        </div>
+        <button class="sleep-btn" id="uploadBtn" disabled>上传</button>
+      </div>
+
+      <!-- Gallery -->
+      <div class="sleep-grid" id="sleepGrid"></div>
+      <div class="sleep-empty" id="sleepEmpty">还没有照片，快来投稿吧 📸</div>
+    </div>
+  </section>
+
+  <!-- Lightbox -->
+  <div class="lightbox" id="lightbox">
+    <span class="lightbox-close">✕</span>
+    <img id="lightboxImg" src="" alt="" />
+  </div>
+
+  <div id="footer-slot"></div>
+
+  <div class="toast" id="toast"></div>
+
+  <script src="js/components.js"></script>
+  <script>
+    document.getElementById('pageTransition')?.classList.remove('active');
+
+    // Back to top
+    (function() {
+      const btn = document.getElementById('backToTop');
+      if (!btn) return;
+      let ticking = false;
+      window.addEventListener('scroll', () => {
+        if (!ticking) {
+          requestAnimationFrame(() => {
+            btn.classList.toggle('visible', window.scrollY > 400);
+            ticking = false;
+          });
+          ticking = true;
+        }
+      });
+      btn.addEventListener('click', () => {
+        if (window.lenis) window.lenis.scrollTo(0);
+        else window.scrollTo({ top: 0, behavior: 'smooth' });
+      });
+    })();
+
+    // ===== Load photos =====
+    const grid = document.getElementById('sleepGrid');
+    const empty = document.getElementById('sleepEmpty');
+
+    async function loadPhotos() {
+      try {
+        const res = await fetch('/api/sleep');
+        const photos = await res.json();
+        if (!photos || photos.length === 0) {
+          grid.innerHTML = '';
+          empty.style.display = 'block';
+          return;
+        }
+        empty.style.display = 'none';
+        grid.innerHTML = photos.map(p => `
+          <div class="sleep-card" data-src="/${p.file_path}">
+            <img src="/${p.file_path}" alt="睡觉照片" loading="lazy" />
+            <div class="byline">📸 ${escHtml(p.uploaded_by)}</div>
+          </div>
+        `).join('');
+      } catch (e) {
+        console.error('Failed to load photos', e);
+      }
+    }
+    function escHtml(s) { return String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'})[c]); }
+    loadPhotos();
+
+    // ===== Upload =====
+    const fileInput = document.getElementById('fileInput');
+    const uploadZone = document.getElementById('uploadZone');
+    const uploadBtn = document.getElementById('uploadBtn');
+    const uploaderName = document.getElementById('uploaderName');
+    let selectedFile = null;
+
+    uploadZone.addEventListener('click', () => fileInput.click());
+    fileInput.addEventListener('change', () => {
+      selectedFile = fileInput.files[0] || null;
+      uploadBtn.disabled = !selectedFile;
+      if (selectedFile) {
+        uploadZone.querySelector('.text').textContent = selectedFile.name;
+      } else {
+        uploadZone.querySelector('.text').textContent = '点击选择照片';
+      }
+    });
+
+    uploadBtn.addEventListener('click', async () => {
+      if (!selectedFile) return;
+      uploadBtn.disabled = true;
+      uploadBtn.textContent = '上传中…';
+
+      try {
+        const fd = new FormData();
+        fd.append('file', selectedFile);
+        fd.append('uploaded_by', uploaderName.value.trim() || '匿名');
+
+        const res = await fetch('/api/sleep', { method: 'POST', body: fd });
+        if (!res.ok) throw new Error('上传失败');
+
+        fileInput.value = '';
+        selectedFile = null;
+        uploadZone.querySelector('.text').textContent = '点击选择照片';
+        uploaderName.value = '';
+        showToast('投稿成功！');
+        loadPhotos();
+      } catch (err) {
+        showToast('上传失败，请重试');
+      }
+      uploadBtn.disabled = false;
+      uploadBtn.textContent = '上传';
+    });
+
+    // ===== Lightbox =====
+    grid.addEventListener('click', e => {
+      const card = e.target.closest('.sleep-card');
+      if (!card) return;
+      const lb = document.getElementById('lightbox');
+      const img = document.getElementById('lightboxImg');
+      img.src = card.dataset.src;
+      lb.classList.add('active');
+    });
+    document.querySelector('.lightbox-close').addEventListener('click', () => {
+      document.getElementById('lightbox').classList.remove('active');
+      document.getElementById('lightboxImg').src = '';
+    });
+    document.getElementById('lightbox').addEventListener('click', e => {
+      if (e.target === e.currentTarget) {
+        e.target.classList.remove('active');
+        document.getElementById('lightboxImg').src = '';
+      }
+    });
+    document.addEventListener('keydown', e => {
+      if (e.key === 'Escape') document.getElementById('lightbox')?.classList.remove('active');
+    });
+
+    // ===== Toast =====
+    let toastTimer;
+    function showToast(msg) {
+      const el = document.getElementById('toast');
+      el.textContent = msg;
+      el.classList.add('show');
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => el.classList.remove('show'), 3000);
+    }
+  </script>
+</body>
+</html>

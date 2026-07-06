@@ -5,7 +5,7 @@ const { getDb } = require('../db');
 router.get('/events', async (req, res) => {
   const db = await getDb();
   const rows = db.prepare(`
-    SELECT id, year, number, name, description
+    SELECT id, year, number, name, description, author
     FROM events
     ORDER BY year DESC, number ASC
   `).all();

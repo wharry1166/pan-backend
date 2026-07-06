@@ -96,8 +96,8 @@ async function seed(force) {
   // Insert events and media
   for (const ev of eventsData) {
     const info = db.prepare(`
-      INSERT INTO events (year, number, name, description, content)
-      VALUES (?, ?, ?, ?, ?)
+      INSERT INTO events (year, number, name, description, content, author)
+      VALUES (?, ?, ?, ?, ?, '')
     `).run([ev.year, ev.number, ev.name, ev.description, ev.content]);
 
     const eventId = info.lastInsertRowid;

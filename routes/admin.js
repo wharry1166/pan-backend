@@ -29,7 +29,7 @@ const upload = multer({
 // --- Event CRUD ---
 
 router.post('/events', async (req, res) => {
-  const { year, number, name, description, content } = req.body;
+  const { year, number, name, description, content, author } = req.body;
   if (!year || !number || !name) {
     return res.status(400).json({ error: 'year, number, name required' });
   }
@@ -44,21 +44,21 @@ router.post('/events', async (req, res) => {
   }
 
   const info = db.prepare(`
-    INSERT INTO events (year, number, name, description, content)
-    VALUES (?, ?, ?, ?, ?)
-  `).run([Number(year), Number(number), name, description || '', content || '']);
+    INSERT INTO events (year, number, name, description, content, author)
+    VALUES (?, ?, ?, ?, ?, ?)
+  `).run([Number(year), Number(number), name, description || '', content || '', author || '']);
 
   res.status(201).json({ id: info.lastInsertRowid });
 });
 
 router.put('/events/:id', async (req, res) => {
   const db = await getDb();
-  const { year, number, name, description, content } = req.body;
+  const { year, number, name, description, content, author } = req.body;
 
   db.prepare(`
-    UPDATE events SET year=?, number=?, name=?, description=?, content=?, updated_at=datetime('now')
+    UPDATE events SET year=?, number=?, name=?, description=?, content=?, author=?, updated_at=datetime('now')
     WHERE id=?
-  `).run([Number(year), Number(number), name, description || '', content || '', Number(req.params.id)]);
+  `).run([Number(year), Number(number), name, description || '', content || '', author || '', Number(req.params.id)]);
 
   res.json({ ok: true });
 });

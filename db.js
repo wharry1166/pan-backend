@@ -107,6 +107,7 @@ async function getDb() {
         name        TEXT NOT NULL,
         description TEXT NOT NULL DEFAULT '',
         content     TEXT NOT NULL DEFAULT '',
+        author      TEXT NOT NULL DEFAULT '',
         created_at  TEXT DEFAULT (datetime('now')),
         updated_at  TEXT DEFAULT (datetime('now')),
         UNIQUE(year, number)
@@ -123,7 +124,18 @@ async function getDb() {
       );
       CREATE INDEX IF NOT EXISTS idx_events_year_number ON events(year, number);
       CREATE INDEX IF NOT EXISTS idx_media_event_id ON media(event_id);
+      CREATE TABLE IF NOT EXISTS sleep_photos (
+        id          INTEGER PRIMARY KEY AUTOINCREMENT,
+        file_path   TEXT NOT NULL,
+        uploaded_by TEXT NOT NULL DEFAULT '',
+        created_at  TEXT DEFAULT (datetime('now'))
+      );
     `);
+
+    // Migration: add author column for existing databases
+    try { raw.run("ALTER TABLE events ADD COLUMN author TEXT NOT NULL DEFAULT ''"); } catch {}
+    // Migration: sleep_photos table
+    try { raw.run("CREATE TABLE IF NOT EXISTS sleep_photos (id INTEGER PRIMARY KEY AUTOINCREMENT, file_path TEXT NOT NULL, uploaded_by TEXT NOT NULL DEFAULT '', created_at TEXT DEFAULT (datetime('now')))"); } catch {}
   }
   return db;
 }

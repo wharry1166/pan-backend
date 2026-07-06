@@ -447,6 +447,11 @@ img {
   color: var(--text-muted);
   line-height: 1.6;
 }
+.event-author {
+  color: var(--accent);
+  font-size: 0.82rem;
+  opacity: 0.8;
+}
 
 /* ===== Contact ===== */
 .contact-grid {

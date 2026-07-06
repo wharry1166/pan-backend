@@ -9,6 +9,8 @@ const fs = require('fs');
 const publicRoutes = require('./routes/public');
 const authRoutes = require('./routes/auth');
 const adminRoutes = require('./routes/admin');
+const contributionRoutes = require('./routes/contributions');
+const sleepRoutes = require('./routes/sleep');
 const { getDb } = require('./db');
 
 const app = express();
@@ -54,6 +56,8 @@ app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 app.use('/api', publicRoutes);
 app.use('/api/auth', authRoutes);
 app.use('/api/admin', adminRoutes);
+app.use('/api/contributions', contributionRoutes);
+app.use('/api/sleep', sleepRoutes);
 
 // Error handler
 app.use((err, req, res, next) => {
