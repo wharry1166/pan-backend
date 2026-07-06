@@ -473,24 +473,7 @@
       if (pt) pt.classList.remove('active');
     })();
 
-    // ---- Hero Parallax ----
-    (function initHeroParallax() {
-      const heroBg = document.querySelector('.hero-bg-img');
-      if (!heroBg) return;
-      let ticking = false;
-      window.addEventListener('scroll', () => {
-        if (!ticking) {
-          requestAnimationFrame(() => {
-            const st = window.scrollY;
-            const maxScroll = window.innerHeight;
-            const progress = Math.min(st / maxScroll, 1);
-            heroBg.style.transform = `translateY(${progress * 80}px) scale(${1 - progress * 0.08})`;
-            ticking = false;
-          });
-          ticking = true;
-        }
-      });
-    })();
+    // ---- Hero Parallax (removed) ----
 
     // ---- Back to Top ----
     (function initBackToTop() {

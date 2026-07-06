@@ -220,6 +220,7 @@ img {
   font-weight: 300;
 }
 
+
 .hero-tagline .cursor-blink {
   display: inline-block;
   width: 2px;
@@ -535,10 +536,12 @@ img {
   font-family: var(--font-mono);
 }
 
-/* ===== Hero Parallax ===== */
+/* ===== Hero Image Full-bleed ===== */
 .hero-bg-img {
-  will-change: transform;
-  transition: transform 0.1s ease-out;
+  width: 100% !important;
+  height: 100% !important;
+  max-width: none !important;
+  object-fit: cover;
 }
 
 /* ===== Back to Top ===== */
